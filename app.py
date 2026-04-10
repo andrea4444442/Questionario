@@ -93,15 +93,15 @@ def punteggio_si_no(risposte: dict) -> int:
 
 class PDFReport(FPDF):
     def header(self):
-        # Logo in alto a destra
-        if os.path.exists(LOGO_PATH):
-            self.image(LOGO_PATH, x=self.w - 60, y=8, w=50)
-        # Reset posizione a sinistra dopo il logo
-        self.set_xy(self.l_margin, 8)
+        y_start = self.y
         self.set_font("Helvetica", "B", 14)
         self.cell(0, 10, "Questionario Rischio ICT", new_x="LMARGIN", new_y="NEXT")
         self.set_font("Helvetica", "", 9)
         self.cell(0, 6, f"Data: {date.today().strftime('%d/%m/%Y')}", new_x="LMARGIN", new_y="NEXT")
+        # Logo in alto a destra (posizionamento assoluto, non sposta il cursore)
+        if os.path.exists(LOGO_PATH):
+            self.image(LOGO_PATH, x=self.w - 60, y=y_start, w=50)
+        self.set_x(self.l_margin)
         self.ln(6)
 
     def footer(self):
@@ -114,38 +114,49 @@ def genera_pdf(info: dict, categorie: dict[str, dict], punteggi: dict[str, int],
     pdf = PDFReport()
     pdf.set_auto_page_break(auto=True, margin=20)
     pdf.add_page()
+    w = pdf.w - pdf.l_margin - pdf.r_margin
 
     # Info servizio
+    pdf.set_x(pdf.l_margin)
     pdf.set_font("Helvetica", "B", 12)
-    pdf.cell(0, 8, "Informazioni Servizio", new_x="LMARGIN", new_y="NEXT")
+    pdf.multi_cell(w, 8, "Informazioni Servizio")
     pdf.set_font("Helvetica", "", 10)
-    pdf.multi_cell(0, 6, f"Nome: {info['nome']}")
-    pdf.multi_cell(0, 6, f"Descrizione: {info['descrizione']}")
-    pdf.multi_cell(0, 6, f"Gestito autonomamente: {'Vero' if info['d1'] else 'Falso'}")
-    pdf.multi_cell(0, 6, f"Supporto funzione essenziale: {'Vero' if info['d2'] else 'Falso'}")
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(w, 6, f"Nome: {info['nome']}")
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(w, 6, f"Descrizione: {info['descrizione']}")
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(w, 6, f"Gestito autonomamente: {'Vero' if info['d1'] else 'Falso'}")
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(w, 6, f"Supporto funzione essenziale: {'Vero' if info['d2'] else 'Falso'}")
     pdf.ln(4)
 
     # Domande e risposte per categoria
     for cat_nome, risposte in categorie.items():
         pdf.set_font("Helvetica", "B", 11)
-        pdf.multi_cell(0, 8, cat_nome)
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(w, 8, cat_nome)
         pdf.set_font("Helvetica", "", 9)
         for domanda, risposta in risposte.items():
-            pdf.multi_cell(0, 5, f"  D: {domanda}")
+            pdf.set_x(pdf.l_margin)
+            pdf.multi_cell(w, 5, f"  D: {domanda}")
             pdf.set_font("Helvetica", "B", 9)
-            pdf.multi_cell(0, 5, f"  R: {risposta}")
+            pdf.set_x(pdf.l_margin)
+            pdf.multi_cell(w, 5, f"  R: {risposta}")
             pdf.set_font("Helvetica", "", 9)
             pdf.ln(1)
         punteggio = punteggi.get(cat_nome, 0)
         pdf.set_font("Helvetica", "B", 10)
-        pdf.cell(0, 6, f"  Punteggio categoria: {punteggio}", new_x="LMARGIN", new_y="NEXT")
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(w, 6, f"  Punteggio categoria: {punteggio}")
         pdf.ln(3)
 
     # Risultato finale
     pdf.ln(4)
     pdf.set_font("Helvetica", "B", 13)
     max_punteggio = max(punteggi.values()) if punteggi else 0
-    pdf.multi_cell(0, 10, f"LIVELLO DI RISCHIO: {livello} (punteggio max: {max_punteggio})")
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(w, 10, f"LIVELLO DI RISCHIO: {livello} (punteggio max: {max_punteggio})")
 
     return bytes(pdf.output())
 
