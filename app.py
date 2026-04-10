@@ -96,6 +96,8 @@ class PDFReport(FPDF):
         # Logo in alto a destra
         if os.path.exists(LOGO_PATH):
             self.image(LOGO_PATH, x=self.w - 60, y=8, w=50)
+        # Reset posizione a sinistra dopo il logo
+        self.set_xy(self.l_margin, 8)
         self.set_font("Helvetica", "B", 14)
         self.cell(0, 10, "Questionario Rischio ICT", new_x="LMARGIN", new_y="NEXT")
         self.set_font("Helvetica", "", 9)
