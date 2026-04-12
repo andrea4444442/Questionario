@@ -1,13 +1,30 @@
 import streamlit as st
 import io
 import os
-from datetime import date
+from datetime import date, datetime
 from fpdf import FPDF
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.drawing.image import Image as XlImage
 
-LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png")
+LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Logo Meta.png")
+
+
+@st.cache_data(ttl=0)
+def carica_logo_bytes(mtime: float) -> bytes | None:
+    """Carica il logo dal disco. Il parametro mtime forza il ricaricamento se il file cambia."""
+    if not os.path.exists(LOGO_PATH):
+        return None
+    with open(LOGO_PATH, "rb") as f:
+        return f.read()
+
+
+def _logo_bytes() -> bytes | None:
+    """Restituisce sempre i bytes aggiornati del logo corrente."""
+    if not os.path.exists(LOGO_PATH):
+        return None
+    mtime = os.path.getmtime(LOGO_PATH)
+    return carica_logo_bytes(mtime)
 
 # ---------------------------------------------------------------------------
 # Configurazione pagina
@@ -99,8 +116,9 @@ class PDFReport(FPDF):
         self.set_font("Helvetica", "", 9)
         self.cell(0, 6, f"Data: {date.today().strftime('%d/%m/%Y')}", new_x="LMARGIN", new_y="NEXT")
         # Logo in alto a destra (posizionamento assoluto, non sposta il cursore)
-        if os.path.exists(LOGO_PATH):
-            self.image(LOGO_PATH, x=self.w - 60, y=y_start, w=50)
+        logo_bytes = _logo_bytes()
+        if logo_bytes:
+            self.image(io.BytesIO(logo_bytes), x=self.w - 60, y=y_start, w=50)
         self.set_x(self.l_margin)
         self.ln(6)
 
@@ -455,6 +473,7 @@ if st.button("Calcola Rischio", type="primary", use_container_width=True):
             "max_punteggio": max_punteggio,
             "livello": livello,
             "colore": colore,
+            "export_id": datetime.now().strftime("%Y%m%d_%H%M%S"),
         }
 
 # Mostra risultato se presente
@@ -481,8 +500,14 @@ if "risultato" in st.session_state:
     )
 
     st.markdown("")
+    logo_time = "n/d"
+    if os.path.exists(LOGO_PATH):
+        logo_time = datetime.fromtimestamp(os.path.getmtime(LOGO_PATH)).strftime("%d/%m/%Y %H:%M:%S")
+    st.caption(f"Logo attivo: {os.path.basename(LOGO_PATH)} — aggiornato: {logo_time}")
 
     # Export
+    export_id = res.get("export_id", datetime.now().strftime("%Y%m%d_%H%M%S"))
+    export_base_name = f"rischio_ict_{nome_servizio.replace(' ', '_')}_{export_id}"
     col_pdf, col_xlsx = st.columns(2)
     with col_pdf:
         pdf_bytes = genera_pdf(
@@ -491,7 +516,7 @@ if "risultato" in st.session_state:
         st.download_button(
             label="Scarica PDF",
             data=pdf_bytes,
-            file_name=f"rischio_ict_{nome_servizio.replace(' ', '_')}.pdf",
+            file_name=f"{export_base_name}.pdf",
             mime="application/pdf",
             use_container_width=True,
         )
@@ -502,7 +527,7 @@ if "risultato" in st.session_state:
         st.download_button(
             label="Scarica Excel",
             data=xlsx_bytes,
-            file_name=f"rischio_ict_{nome_servizio.replace(' ', '_')}.xlsx",
+            file_name=f"{export_base_name}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             use_container_width=True,
         )
