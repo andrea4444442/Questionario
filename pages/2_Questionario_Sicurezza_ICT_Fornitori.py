@@ -58,7 +58,7 @@ def _pdf_sezione(pdf, titolo: str, voci: list[tuple[str, str]]) -> None:
         pdf.multi_cell(w, 5, f"  {label}")
         pdf.set_font("Helvetica", "B", 9)
         pdf.set_x(pdf.l_margin)
-        pdf.multi_cell(w, 5, f"  \u2192 {valore}")
+        pdf.multi_cell(w, 5, f"  -> {valore}")
         pdf.set_font("Helvetica", "", 9)
         pdf.ln(1)
     pdf.ln(3)
