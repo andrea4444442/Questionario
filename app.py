@@ -49,14 +49,14 @@ with col2:
             background-color: #E8F5E9;
         ">
             <h3 style="color:#388E3C; margin-bottom:10px;">📋 Questionario 2</h3>
-            <p style="color:#333; font-size:15px;">In fase di configurazione.</p>
+            <p style="color:#333; font-size:15px;">Valutazione delle misure di sicurezza ICT del fornitore.</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
     st.markdown("")
     st.page_link(
-        "pages/2_Questionario_2.py",
+        "pages/2_Questionario_Sicurezza_ICT_Fornitori.py",
         label="Apri Questionario 2",
         use_container_width=True,
     )
