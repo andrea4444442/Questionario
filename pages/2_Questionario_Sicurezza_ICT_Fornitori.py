@@ -28,6 +28,18 @@ def _logo_bytes() -> bytes | None:
 # Generazione PDF
 # ---------------------------------------------------------------------------
 
+def _san(text: str) -> str:
+    """Sostituisce caratteri Unicode non supportati da Helvetica (Latin-1)."""
+    return (
+        str(text)
+        .replace("\u2019", "'").replace("\u2018", "'")
+        .replace("\u201c", '"').replace("\u201d", '"')
+        .replace("\u2013", "-").replace("\u2014", "-")
+        .replace("\u2026", "...").replace("\u2192", "->")
+        .replace("\u2190", "<-").replace("\u00b7", "-")
+    )
+
+
 class PDFReport(FPDF):
     def header(self):
         y_start = self.y
@@ -51,14 +63,14 @@ def _pdf_sezione(pdf, titolo: str, voci: list[tuple[str, str]]) -> None:
     w = pdf.w - pdf.l_margin - pdf.r_margin
     pdf.set_font("Helvetica", "B", 11)
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 8, titolo)
+    pdf.multi_cell(w, 8, _san(titolo))
     pdf.set_font("Helvetica", "", 9)
     for label, valore in voci:
         pdf.set_x(pdf.l_margin)
-        pdf.multi_cell(w, 5, f"  {label}")
+        pdf.multi_cell(w, 5, _san(f"  {label}"))
         pdf.set_font("Helvetica", "B", 9)
         pdf.set_x(pdf.l_margin)
-        pdf.multi_cell(w, 5, f"  -> {valore}")
+        pdf.multi_cell(w, 5, _san(f"  -> {valore}"))
         pdf.set_font("Helvetica", "", 9)
         pdf.ln(1)
     pdf.ln(3)
@@ -82,15 +94,15 @@ def genera_pdf(data: dict) -> bytes:
         if sez.get("punteggio") is not None:
             pdf.set_font("Helvetica", "B", 10)
             pdf.set_x(pdf.l_margin)
-            pdf.multi_cell(w, 6, f"  Punteggio sezione: {sez['punteggio']}")
+            pdf.multi_cell(w, 6, _san(f"  Punteggio sezione: {sez['punteggio']}"))
             pdf.ln(2)
 
     pdf.ln(4)
     pdf.set_font("Helvetica", "B", 13)
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 10, f"PUNTEGGIO TOTALE: {data['punteggio_totale']}")
+    pdf.multi_cell(w, 10, _san(f"PUNTEGGIO TOTALE: {data['punteggio_totale']}"))
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 10, f"MISURE DI SICUREZZA: {data['valutazione']} (valore: {data['valore']})")
+    pdf.multi_cell(w, 10, _san(f"MISURE DI SICUREZZA: {data['valutazione']} (valore: {data['valore']})"))
     return bytes(pdf.output())
 
 

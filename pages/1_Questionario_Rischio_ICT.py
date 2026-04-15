@@ -103,6 +103,18 @@ def punteggio_si_no(risposte: dict) -> int:
 # Generazione PDF
 # ---------------------------------------------------------------------------
 
+def _san(text: str) -> str:
+    """Sostituisce caratteri Unicode non supportati da Helvetica (Latin-1)."""
+    return (
+        str(text)
+        .replace("\u2019", "'").replace("\u2018", "'")
+        .replace("\u201c", '"').replace("\u201d", '"')
+        .replace("\u2013", "-").replace("\u2014", "-")
+        .replace("\u2026", "...").replace("\u2192", "->")
+        .replace("\u2190", "<-").replace("\u00b7", "-")
+    )
+
+
 class PDFReport(FPDF):
     def header(self):
         y_start = self.y
@@ -135,33 +147,33 @@ def genera_pdf(info: dict, categorie: dict[str, dict], punteggi: dict[str, int],
     pdf.multi_cell(w, 8, "Informazioni Servizio")
     pdf.set_font("Helvetica", "", 10)
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 6, f"Nome: {info['nome']}")
+    pdf.multi_cell(w, 6, _san(f"Nome: {info['nome']}"))
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 6, f"Descrizione: {info['descrizione']}")
+    pdf.multi_cell(w, 6, _san(f"Descrizione: {info['descrizione']}"))
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 6, f"Gestito autonomamente: {'Vero' if info['d1'] else 'Falso'}")
+    pdf.multi_cell(w, 6, _san(f"Gestito autonomamente: {'Vero' if info['d1'] else 'Falso'}"))
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 6, f"Supporto funzione essenziale: {'Vero' if info['d2'] else 'Falso'}")
+    pdf.multi_cell(w, 6, _san(f"Supporto funzione essenziale: {'Vero' if info['d2'] else 'Falso'}"))
     pdf.ln(4)
 
     # Domande e risposte per categoria
     for cat_nome, risposte in categorie.items():
         pdf.set_font("Helvetica", "B", 11)
         pdf.set_x(pdf.l_margin)
-        pdf.multi_cell(w, 8, cat_nome)
+        pdf.multi_cell(w, 8, _san(cat_nome))
         pdf.set_font("Helvetica", "", 9)
         for domanda, risposta in risposte.items():
             pdf.set_x(pdf.l_margin)
-            pdf.multi_cell(w, 5, f"  D: {domanda}")
+            pdf.multi_cell(w, 5, _san(f"  D: {domanda}"))
             pdf.set_font("Helvetica", "B", 9)
             pdf.set_x(pdf.l_margin)
-            pdf.multi_cell(w, 5, f"  R: {risposta}")
+            pdf.multi_cell(w, 5, _san(f"  R: {risposta}"))
             pdf.set_font("Helvetica", "", 9)
             pdf.ln(1)
         punteggio = punteggi.get(cat_nome, 0)
         pdf.set_font("Helvetica", "B", 10)
         pdf.set_x(pdf.l_margin)
-        pdf.multi_cell(w, 6, f"  Punteggio categoria: {punteggio}")
+        pdf.multi_cell(w, 6, _san(f"  Punteggio categoria: {punteggio}"))
         pdf.ln(3)
 
     # Risultato finale
@@ -169,7 +181,7 @@ def genera_pdf(info: dict, categorie: dict[str, dict], punteggi: dict[str, int],
     pdf.set_font("Helvetica", "B", 13)
     max_punteggio = max(punteggi.values()) if punteggi else 0
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(w, 10, f"LIVELLO DI RISCHIO: {livello} (punteggio max: {max_punteggio})")
+    pdf.multi_cell(w, 10, _san(f"LIVELLO DI RISCHIO: {livello} (punteggio max: {max_punteggio})"))
 
     return bytes(pdf.output())
 
