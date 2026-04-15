@@ -10,6 +10,7 @@ from openpyxl.drawing.image import Image as XlImage
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from auth import require_login
+from supabase_client import salva_submission
 
 LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Logo Meta.png")
 
@@ -473,6 +474,8 @@ if st.button("Calcola Rischio", type="primary", use_container_width=True):
         max_punteggio = max(punteggi_categorie.values())
         livello, colore = calcola_livello(max_punteggio)
 
+        export_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+
         # Salva in session_state per export
         st.session_state["risultato"] = {
             "info": {
@@ -486,8 +489,22 @@ if st.button("Calcola Rischio", type="primary", use_container_width=True):
             "max_punteggio": max_punteggio,
             "livello": livello,
             "colore": colore,
-            "export_id": datetime.now().strftime("%Y%m%d_%H%M%S"),
+            "export_id": export_id,
         }
+
+        # Salva su Supabase
+        salva_submission(
+            tipo=1,
+            nome_azienda=nome_servizio,
+            punteggio=max_punteggio,
+            livello=livello,
+            valore={"BASSO": 1, "MEDIO BASSO": 2, "MEDIO ALTO": 3, "ALTO": 4}.get(livello, 0),
+            dati={
+                "info": st.session_state["risultato"]["info"],
+                "punteggi": punteggi_categorie,
+                "export_id": export_id,
+            },
+        )
 
 # Mostra risultato se presente
 if "risultato" in st.session_state:

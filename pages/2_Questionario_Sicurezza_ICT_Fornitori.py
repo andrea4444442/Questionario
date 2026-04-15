@@ -9,6 +9,7 @@ from openpyxl.styles import Font
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from auth import require_login
+from supabase_client import salva_submission, salva_documento
 
 LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Logo Meta.png")
 
@@ -685,6 +686,8 @@ if st.button("Calcola Valutazione", type="primary", use_container_width=True):
             else:
                 valutazione, valore, colore = "INADEGUATE", 1, "#f44336"
 
+        export_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+
         st.session_state["risultato_q2"] = {
             "ragione_sociale": ragione_sociale,
             "descrizione": descrizione,
@@ -695,8 +698,47 @@ if st.button("Calcola Valutazione", type="primary", use_container_width=True):
             "valutazione": valutazione,
             "valore": valore,
             "colore": colore,
-            "export_id": datetime.now().strftime("%Y%m%d_%H%M%S"),
+            "export_id": export_id,
         }
+
+        # Salva su Supabase
+        submission_id = salva_submission(
+            tipo=2,
+            nome_azienda=ragione_sociale,
+            punteggio=punti_totali,
+            livello=valutazione,
+            valore=valore,
+            dati={
+                "descrizione": descrizione,
+                "paese": paese,
+                "funzione_essenziale": funzione_essenziale,
+                "sezioni": [
+                    {"titolo": s["titolo"], "punteggio": s.get("punteggio")}
+                    for s in sezioni_data
+                ],
+                "export_id": export_id,
+            },
+        )
+
+        # Salva documenti allegati su Supabase Storage
+        if submission_id:
+            CHIAVI_DOCUMENTI = {
+                "q2_dpia": "DPIA",
+                "q2_audit": "Audit",
+                "q2_policy_file": "Policy",
+                "q2_pco": "PCO",
+            }
+            for sk_bytes, tipo_doc in {
+                f"_file_bytes_{k}": v for k, v in CHIAVI_DOCUMENTI.items()
+            }.items():
+                sk_name = sk_bytes.replace("_bytes_", "_name_")
+                if sk_bytes in st.session_state:
+                    salva_documento(
+                        submission_id=submission_id,
+                        nome_file=st.session_state.get(sk_name, "documento"),
+                        tipo_doc=tipo_doc,
+                        file_bytes=st.session_state[sk_bytes],
+                    )
 
 if "risultato_q2" in st.session_state:
     res = st.session_state["risultato_q2"]
