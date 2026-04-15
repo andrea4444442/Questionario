@@ -1,7 +1,10 @@
 import streamlit as st
 import os
+from auth import require_login
 
 st.set_page_config(page_title="Questionari Meta", layout="centered")
+
+require_login()
 
 LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Logo Meta.png")
 
@@ -60,3 +63,10 @@ with col2:
         label="Apri Questionario 2",
         use_container_width=True,
     )
+
+# Logout nella sidebar
+with st.sidebar:
+    st.markdown("---")
+    if st.button("Esci", use_container_width=True):
+        st.session_state["logged_in"] = False
+        st.rerun()

@@ -1,12 +1,18 @@
 import streamlit as st
 import io
 import os
+import sys
 from datetime import date, datetime
 from fpdf import FPDF
 from openpyxl import Workbook
 from openpyxl.styles import Font
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from auth import require_login
+
 LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Logo Meta.png")
+
+require_login()
 
 
 @st.cache_data(ttl=0)
