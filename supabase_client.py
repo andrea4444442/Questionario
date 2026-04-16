@@ -11,7 +11,10 @@ def get_supabase() -> Client:
 
 def get_tenant() -> str:
     """Legge il nome del tenant dai secrets (es. 'flowpay', 'sarda_factoring')."""
-    return st.secrets["supabase"].get("tenant", "default")
+    try:
+        return st.secrets["supabase"]["tenant"]
+    except Exception:
+        return "default"
 
 
 def salva_submission(tipo: int, nome_azienda: str, punteggio: int, livello: str, valore: int, dati: dict) -> str | None:
