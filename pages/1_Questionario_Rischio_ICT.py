@@ -495,7 +495,7 @@ if st.button("Calcola Rischio", type="primary", use_container_width=True):
         # Salva su Supabase
         salva_submission(
             tipo=1,
-            nome_azienda=nome_servizio,
+            nome_azienda=nome_servizio,  # mappato su nome_servizio_ict in supabase_client
             punteggio=max_punteggio,
             livello=livello,
             valore={"BASSO": 1, "MEDIO BASSO": 2, "MEDIO ALTO": 3, "ALTO": 4}.get(livello, 0),

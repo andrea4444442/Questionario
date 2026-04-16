@@ -16,7 +16,7 @@ st.title("Portale Questionari")
 st.markdown("Seleziona il questionario che desideri compilare.")
 st.divider()
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown(
@@ -61,6 +61,29 @@ with col2:
     st.page_link(
         "pages/2_Questionario_Sicurezza_ICT_Fornitori.py",
         label="Apri Questionario 2",
+        use_container_width=True,
+    )
+
+with col3:
+    st.markdown(
+        """
+        <div style="
+            border: 2px solid #7B1FA2;
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            background-color: #F3E5F5;
+        ">
+            <h3 style="color:#7B1FA2; margin-bottom:10px;">📊 Registro Rischi</h3>
+            <p style="color:#333; font-size:15px;">Riepilogo rischio residuo per tutti i servizi valutati.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown("")
+    st.page_link(
+        "pages/3_Registro_Rischi.py",
+        label="Apri Registro",
         use_container_width=True,
     )
 
