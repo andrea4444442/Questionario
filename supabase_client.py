@@ -9,6 +9,11 @@ def get_supabase() -> Client:
     return create_client(cfg["url"], cfg["service_key"])
 
 
+def get_tenant() -> str:
+    """Legge il nome del tenant dai secrets (es. 'flowpay', 'sarda_factoring')."""
+    return st.secrets["supabase"].get("tenant", "default")
+
+
 def salva_submission(tipo: int, nome_azienda: str, punteggio: int, livello: str, valore: int, dati: dict) -> str | None:
     """Salva una compilazione e restituisce l'ID generato."""
     try:
@@ -22,6 +27,7 @@ def salva_submission(tipo: int, nome_azienda: str, punteggio: int, livello: str,
                 "livello_rischio": livello,
                 "valore": valore,
                 "dati": dati,
+                "tenant": get_tenant(),
             })
             .execute()
         )
@@ -35,7 +41,8 @@ def salva_documento(submission_id: str, nome_file: str, tipo_doc: str, file_byte
     """Carica un documento su Storage e registra il riferimento nel DB."""
     try:
         sb = get_supabase()
-        path = f"{submission_id}/{tipo_doc}/{nome_file}"
+        tenant = get_tenant()
+        path = f"{tenant}/{submission_id}/{tipo_doc}/{nome_file}"
         sb.storage.from_("documenti").upload(
             path,
             file_bytes,
@@ -46,6 +53,7 @@ def salva_documento(submission_id: str, nome_file: str, tipo_doc: str, file_byte
             "nome_file": nome_file,
             "tipo_documento": tipo_doc,
             "storage_path": path,
+            "tenant": tenant,
         }).execute()
     except Exception as e:
         st.warning(f"Salvataggio documento '{nome_file}' non riuscito: {e}")
