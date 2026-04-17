@@ -1,246 +1,351 @@
+"""
+Tema grafico enterprise — ICT Risk Management Platform.
+Palette istituzionale: navy scuro · grigio neutro · accenti teal controllati.
+"""
 import streamlit as st
 
-CSS = """
+# ---------------------------------------------------------------------------
+# Palette di riferimento
+# ---------------------------------------------------------------------------
+C = {
+    "bg":           "#F5F7FA",
+    "surface":      "#FFFFFF",
+    "sidebar":      "#152535",
+    "sidebar_2":    "#1C3246",
+    "primary":      "#1F3A5F",
+    "primary_h":    "#16314F",
+    "accent":       "#2E6F6D",
+    "accent_2":     "#4F6B8A",
+    "border":       "#D9E1EA",
+    "border_2":     "#EBF0F6",
+    "text_1":       "#1B2430",
+    "text_2":       "#5B6573",
+    "text_3":       "#8E97A3",
+    "success_soft": "#DCEFE8",
+    "warning_soft": "#F6EEDB",
+    "danger_soft":  "#F5E2E2",
+}
+
+# ---------------------------------------------------------------------------
+# CSS globale
+# ---------------------------------------------------------------------------
+_CSS = """
 <style>
+/* ── FONT ─────────────────────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Font globale */
-html, body, [class*="css"], .stApp {
-    font-family: 'Inter', sans-serif !important;
+*, *::before, *::after {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
-/* Sfondo app */
-.stApp {
-    background-color: #F4F6FA;
+/* ── APP BACKGROUND ──────────────────────────────────────────────────── */
+.stApp { background-color: #F5F7FA !important; }
+
+.main .block-container {
+    padding: 2.5rem 3rem 4rem 3rem !important;
+    max-width: 1180px !important;
 }
 
-/* Nascondi header Streamlit */
+/* ── STREAMLIT TOP BAR ───────────────────────────────────────────────── */
 header[data-testid="stHeader"] {
-    background-color: #00338D;
-    height: 4px;
+    background-color: #FFFFFF !important;
+    border-bottom: 1px solid #D9E1EA !important;
+    height: 3px !important;
 }
 
-/* Top bar blu */
-.top-bar {
-    background: linear-gradient(135deg, #00338D 0%, #005EB8 100%);
-    padding: 18px 32px;
-    margin: -1rem -1rem 2rem -1rem;
-    display: flex;
-    align-items: center;
-    gap: 16px;
+/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background-color: #152535 !important;
+    border-right: 1px solid #0D1E2C !important;
+}
+[data-testid="stSidebar"] > div:first-child {
+    background-color: #152535 !important;
+    padding-top: 0 !important;
+}
+[data-testid="stSidebar"] * { color: #A8BCC8 !important; }
+[data-testid="stSidebar"] strong { color: #FFFFFF !important; }
+[data-testid="stSidebar"] hr {
+    border-top: 1px solid #1F3A5F !important;
+    margin: 12px 0 !important;
 }
 
-.top-bar h1 {
-    color: white !important;
-    font-size: 22px !important;
-    font-weight: 600 !important;
-    margin: 0 !important;
-    letter-spacing: 0.3px;
-}
-
-.top-bar .subtitle {
-    color: rgba(255,255,255,0.75);
-    font-size: 13px;
-    margin: 0;
-}
-
-/* Card navigazione homepage */
-.nav-card {
-    background: white;
-    border-radius: 4px;
-    padding: 28px 24px;
-    border-top: 4px solid #00338D;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: box-shadow 0.2s;
-    height: 100%;
-}
-
-.nav-card:hover {
-    box-shadow: 0 6px 20px rgba(0,51,141,0.15);
-}
-
-.nav-card .card-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-}
-
-.nav-card h3 {
-    color: #00338D !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    margin-bottom: 8px !important;
-}
-
-.nav-card p {
-    color: #555 !important;
+/* Sidebar — nav page links */
+[data-testid="stSidebar"] [data-testid="stPageLink"] > a {
+    background: transparent !important;
+    color: #7A9AB0 !important;
     font-size: 13px !important;
-    line-height: 1.5 !important;
-    margin: 0 !important;
+    font-weight: 400 !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    text-align: left !important;
+    display: block !important;
+    text-decoration: none !important;
+    border: none !important;
+    transition: background 0.15s, color 0.15s !important;
+}
+[data-testid="stSidebar"] [data-testid="stPageLink"] > a:hover {
+    background: rgba(255,255,255,0.07) !important;
+    color: #FFFFFF !important;
 }
 
-.nav-card.green { border-top-color: #00875A; }
-.nav-card.green h3 { color: #00875A !important; }
-
-.nav-card.purple { border-top-color: #6554C0; }
-.nav-card.purple h3 { color: #6554C0 !important; }
-
-/* Login card */
-.login-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
+/* Sidebar — logout button */
+[data-testid="stSidebar"] .stButton > button {
+    background: transparent !important;
+    border: 1px solid #2A4560 !important;
+    color: #7A9AB0 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    padding: 7px 14px !important;
+    border-radius: 4px !important;
+    width: 100% !important;
+    letter-spacing: 0.2px !important;
+    transition: all 0.15s !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: #4F6B8A !important;
+    color: #FFFFFF !important;
 }
 
-.login-card {
-    background: white;
-    border-radius: 4px;
-    padding: 48px 40px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-    max-width: 420px;
-    width: 100%;
-    border-top: 5px solid #00338D;
-}
-
-.login-card h2 {
-    color: #00338D !important;
+/* ── TYPOGRAPHY ──────────────────────────────────────────────────────── */
+h1 {
+    color: #1B2430 !important;
     font-size: 22px !important;
     font-weight: 700 !important;
+    letter-spacing: -0.3px !important;
+    line-height: 1.3 !important;
     margin-bottom: 4px !important;
 }
-
-.login-card .login-sub {
-    color: #777;
-    font-size: 13px;
-    margin-bottom: 28px;
-}
-
-/* Bottoni */
-.stButton > button {
-    background-color: #00338D !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 3px !important;
+h2 {
+    color: #1B2430 !important;
+    font-size: 17px !important;
     font-weight: 600 !important;
+    letter-spacing: -0.2px !important;
+}
+h3 {
+    color: #1B2430 !important;
     font-size: 14px !important;
-    padding: 10px 24px !important;
-    transition: background-color 0.2s !important;
+    font-weight: 600 !important;
 }
 
-.stButton > button:hover {
-    background-color: #002A75 !important;
-}
-
-/* Input fields */
-.stTextInput > div > div > input,
-.stTextArea > div > div > textarea {
-    border: 1px solid #D0D7E3 !important;
-    border-radius: 3px !important;
-    font-size: 14px !important;
-}
-
-.stTextInput > div > div > input:focus,
-.stTextArea > div > div > textarea:focus {
-    border-color: #00338D !important;
-    box-shadow: 0 0 0 2px rgba(0,51,141,0.12) !important;
-}
-
-/* Sezione header */
-h1 { color: #00338D !important; font-weight: 700 !important; }
-h2 { color: #00338D !important; font-weight: 600 !important; }
-h3 { color: #1A1A2A !important; font-weight: 600 !important; }
-
-/* Divider */
-hr { border-color: #E8ECF4 !important; }
-
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: #00338D !important;
-}
-section[data-testid="stSidebar"] * {
-    color: white !important;
-}
-section[data-testid="stSidebar"] .stButton > button {
-    background-color: rgba(255,255,255,0.15) !important;
-    border: 1px solid rgba(255,255,255,0.3) !important;
-    color: white !important;
-}
-section[data-testid="stSidebar"] .stButton > button:hover {
-    background-color: rgba(255,255,255,0.25) !important;
-}
-
-/* Metriche */
-[data-testid="stMetric"] {
-    background: white;
-    padding: 16px;
-    border-radius: 4px;
-    border-left: 4px solid #00338D;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-
-/* Badge rischio */
-.badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 3px;
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-/* Info/warning/success box */
-.stAlert {
-    border-radius: 3px !important;
-}
-
-/* Tabella */
-.stDataFrame {
+/* ── BUTTONS (content area) ──────────────────────────────────────────── */
+.main .stButton > button {
+    background-color: #1F3A5F !important;
+    color: #FFFFFF !important;
+    border: none !important;
     border-radius: 4px !important;
-    overflow: hidden !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 9px 22px !important;
+    letter-spacing: 0.2px !important;
+    transition: background-color 0.18s, box-shadow 0.18s !important;
+    box-shadow: 0 1px 3px rgba(31,58,95,0.18) !important;
+}
+.main .stButton > button:hover {
+    background-color: #16314F !important;
+    box-shadow: 0 3px 10px rgba(31,58,95,0.22) !important;
 }
 
-/* Download button */
+/* ── DOWNLOAD BUTTON ─────────────────────────────────────────────────── */
 .stDownloadButton > button {
-    background-color: white !important;
-    color: #00338D !important;
-    border: 2px solid #00338D !important;
+    background-color: #FFFFFF !important;
+    color: #1F3A5F !important;
+    border: 1.5px solid #D9E1EA !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    padding: 8px 18px !important;
+    transition: all 0.15s !important;
 }
 .stDownloadButton > button:hover {
-    background-color: #00338D !important;
-    color: white !important;
+    border-color: #1F3A5F !important;
+    background-color: #F0F4FA !important;
 }
 
-/* Page link */
-[data-testid="stPageLink"] a {
-    display: block;
-    background-color: #00338D;
-    color: white !important;
-    text-align: center;
-    padding: 10px;
-    border-radius: 3px;
-    font-weight: 600;
-    font-size: 14px;
+/* ── PAGE LINKS (content area) ───────────────────────────────────────── */
+.main [data-testid="stPageLink"] > a {
+    background-color: #1F3A5F !important;
+    color: #FFFFFF !important;
+    border-radius: 4px !important;
+    padding: 9px 20px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
     text-decoration: none !important;
-    transition: background-color 0.2s;
+    display: block !important;
+    transition: background-color 0.18s !important;
+    letter-spacing: 0.2px !important;
+    border: none !important;
+    box-shadow: 0 1px 3px rgba(31,58,95,0.18) !important;
 }
-[data-testid="stPageLink"] a:hover {
-    background-color: #002A75;
+.main [data-testid="stPageLink"] > a:hover {
+    background-color: #16314F !important;
 }
+
+/* ── INPUTS ──────────────────────────────────────────────────────────── */
+.stTextInput > div > div > input,
+.stTextArea > div > div > textarea,
+.stNumberInput > div > div > input {
+    background-color: #FFFFFF !important;
+    border: 1px solid #D9E1EA !important;
+    border-radius: 4px !important;
+    color: #1B2430 !important;
+    font-size: 14px !important;
+    padding: 9px 12px !important;
+}
+.stTextInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus,
+.stNumberInput > div > div > input:focus {
+    border-color: #1F3A5F !important;
+    box-shadow: 0 0 0 3px rgba(31,58,95,0.08) !important;
+    outline: none !important;
+}
+
+/* Selectbox */
+.stSelectbox [data-baseweb="select"] > div:first-child {
+    border: 1px solid #D9E1EA !important;
+    border-radius: 4px !important;
+    background-color: #FFFFFF !important;
+    font-size: 14px !important;
+}
+
+/* Multiselect */
+.stMultiSelect [data-baseweb="select"] > div:first-child {
+    border: 1px solid #D9E1EA !important;
+    border-radius: 4px !important;
+    background-color: #FFFFFF !important;
+}
+
+/* File uploader */
+[data-testid="stFileUploader"] {
+    border: 1.5px dashed #D9E1EA !important;
+    border-radius: 6px !important;
+    background: #FAFBFD !important;
+}
+
+/* ── FORM CONTAINER ──────────────────────────────────────────────────── */
+[data-testid="stForm"] {
+    border: 1px solid #D9E1EA !important;
+    border-radius: 6px !important;
+    padding: 20px 24px !important;
+    background: #FFFFFF !important;
+}
+
+/* ── DIVIDER ─────────────────────────────────────────────────────────── */
+hr {
+    border: none !important;
+    border-top: 1px solid #D9E1EA !important;
+    margin: 16px 0 !important;
+}
+
+/* ── METRICS ─────────────────────────────────────────────────────────── */
+[data-testid="stMetric"] {
+    background: #FFFFFF !important;
+    padding: 20px 18px !important;
+    border-radius: 6px !important;
+    border: 1px solid #D9E1EA !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+}
+[data-testid="stMetricLabel"] {
+    color: #5B6573 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.6px !important;
+}
+[data-testid="stMetricValue"] {
+    color: #1B2430 !important;
+    font-weight: 700 !important;
+}
+
+/* ── ALERTS ──────────────────────────────────────────────────────────── */
+.stAlert { border-radius: 4px !important; font-size: 13px !important; }
+
+/* ── RADIO ───────────────────────────────────────────────────────────── */
+.stRadio > label {
+    color: #1B2430 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+/* ── SUBHEADER ───────────────────────────────────────────────────────── */
+[data-testid="stMarkdownContainer"] h3 { color: #1B2430 !important; }
+
+/* ── SCROLLBAR ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #F5F7FA; }
+::-webkit-scrollbar-thumb { background: #C8D4DF; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9AAAB8; }
 </style>
 """
 
 
-def inject_css() -> None:
-    st.markdown(CSS, unsafe_allow_html=True)
+def apply_custom_theme() -> None:
+    """Inietta il CSS globale. Da chiamare all'inizio di ogni pagina."""
+    st.markdown(_CSS, unsafe_allow_html=True)
 
 
-def top_bar(title: str, subtitle: str = "") -> None:
-    st.markdown(
-        f'<div class="top-bar">'
-        f'<div><p class="subtitle" style="margin:0;color:rgba(255,255,255,0.6);font-size:11px;letter-spacing:1px;text-transform:uppercase;">Meta Advisory</p>'
-        f'<h1>{title}</h1>'
-        f'{"<p class=subtitle>" + subtitle + "</p>" if subtitle else ""}'
-        f'</div></div>',
-        unsafe_allow_html=True,
-    )
+# Alias per compatibilità con il codice esistente
+inject_css = apply_custom_theme
+
+
+def render_sidebar(current_page: str = "") -> None:
+    """Sidebar di navigazione professionale con stato sessione e logout."""
+    with st.sidebar:
+        # Brand header
+        st.markdown(f"""
+        <div style="padding:28px 20px 20px 20px; border-bottom:1px solid #1F3A5F;">
+            <p style="color:#4F7A8A!important; font-size:10px; font-weight:600;
+                      text-transform:uppercase; letter-spacing:1.8px; margin:0 0 6px 0;">
+                Meta Advisory
+            </p>
+            <p style="color:#FFFFFF!important; font-size:15px; font-weight:700;
+                      margin:0; letter-spacing:-0.2px;">
+                ICT Risk Platform
+            </p>
+            {"<p style='color:#4F7A8A!important;font-size:11px;margin:8px 0 0 0;'>"+current_page+"</p>" if current_page else ""}
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Navigazione
+        st.markdown("""
+        <p style="color:#4F6B8A!important; font-size:10px; font-weight:600;
+                  text-transform:uppercase; letter-spacing:1.4px;
+                  padding:20px 20px 6px 20px; margin:0;">
+            Navigazione
+        </p>
+        """, unsafe_allow_html=True)
+
+        st.page_link("app.py",                                          label="  Dashboard",              icon="▪")
+        st.page_link("pages/1_Questionario_Rischio_ICT.py",             label="  Questionario Rischio ICT", icon="▪")
+        st.page_link("pages/2_Questionario_Sicurezza_ICT_Fornitori.py", label="  Sicurezza Fornitori",    icon="▪")
+        st.page_link("pages/3_Registro_Rischi.py",                      label="  Registro Rischi",        icon="▪")
+
+        # Spacer + sessione + logout
+        st.markdown("<div style='height:40px'></div>", unsafe_allow_html=True)
+        st.markdown("---")
+        st.markdown("""
+        <div style="padding:0 20px 8px 20px;">
+            <p style="color:#4F6B8A!important;font-size:10px;text-transform:uppercase;
+                      letter-spacing:1px;margin:0 0 2px 0;">Sessione attiva</p>
+            <p style="color:#A8BCC8!important;font-size:13px;font-weight:500;margin:0;">admin</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("Esci dalla piattaforma", key="__logout__"):
+            st.session_state["logged_in"] = False
+            st.rerun()
+
+
+def page_header(title: str, subtitle: str = "", tag: str = "") -> None:
+    """Header di sezione con tag, titolo e sottotitolo."""
+    tag_html = f'<p style="color:#4F6B8A;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.4px;margin:0 0 6px 0;">{tag}</p>' if tag else ""
+    sub_html  = f'<p style="color:#5B6573;font-size:13px;margin:4px 0 0 0;line-height:1.6;">{subtitle}</p>' if subtitle else ""
+    st.markdown(f"""
+    <div style="margin-bottom:28px;">
+        {tag_html}
+        <h1 style="color:#1B2430!important;margin:0;">{title}</h1>
+        {sub_html}
+        <div style="width:36px;height:3px;background:#1F3A5F;border-radius:2px;margin-top:12px;"></div>
+    </div>
+    """, unsafe_allow_html=True)

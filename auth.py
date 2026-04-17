@@ -1,67 +1,99 @@
+"""
+Modulo di autenticazione — login page enterprise.
+"""
 import os
 import streamlit as st
-from style import inject_css
+from style import apply_custom_theme
 
 LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Logo Meta.png")
 
 
-def require_login() -> None:
-    inject_css()
+def render_login() -> None:
+    """Pagina di login professionale, centrata, card bianca su sfondo neutro."""
 
-    if st.session_state.get("logged_in"):
-        return
-
-    # Sfondo grigio chiaro per la pagina login
+    # Override sfondo: grigio freddo, non gradiente
     st.markdown("""
     <style>
-    .stApp { background: linear-gradient(135deg, #00338D 0%, #001F6B 100%) !important; }
+    .stApp { background-color: #EDF0F5 !important; }
+    .main .block-container {
+        padding: 0 !important;
+        max-width: 100% !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 90vh;
+    }
+    /* Nasconde la topbar durante il login */
+    header[data-testid="stHeader"] { display: none !important; }
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<div style='height:48px'></div>", unsafe_allow_html=True)
 
-    col_l, col_c, col_r = st.columns([1, 1.4, 1])
-    with col_c:
+    # Layout centrato
+    _, col, _ = st.columns([1, 1.1, 1])
+
+    with col:
         # Logo
         if os.path.exists(LOGO_PATH):
-            st.image(LOGO_PATH, width=160)
-        else:
-            st.markdown('<h2 style="color:white;">Meta Advisory</h2>', unsafe_allow_html=True)
+            logo_c, _ = st.columns([1, 2])
+            with logo_c:
+                st.image(LOGO_PATH)
 
+        # Card header
         st.markdown("""
         <div style="
-            background:white;
-            border-radius:4px;
-            padding:40px 36px 36px 36px;
-            box-shadow:0 8px 32px rgba(0,0,0,0.25);
-            border-top:5px solid #00338D;
-            margin-top:20px;
+            background:#FFFFFF;
+            border:1px solid #D9E1EA;
+            border-top:4px solid #1F3A5F;
+            border-radius:6px;
+            padding:36px 36px 28px 36px;
+            box-shadow:0 4px 24px rgba(21,37,53,0.07);
+            margin-top:18px;
         ">
-            <p style="color:#00338D;font-size:11px;font-weight:600;letter-spacing:1.5px;
-                      text-transform:uppercase;margin-bottom:4px;">Portale ICT Risk</p>
-            <h2 style="color:#1A1A2A;font-size:22px;font-weight:700;margin-bottom:4px;">Accedi alla piattaforma</h2>
-            <p style="color:#888;font-size:13px;margin-bottom:28px;">Inserisci le credenziali per continuare</p>
+            <p style="color:#4F6B8A;font-size:10px;font-weight:700;text-transform:uppercase;
+                      letter-spacing:1.8px;margin:0 0 10px 0;">
+                ICT Risk Management · Accesso Riservato
+            </p>
+            <h2 style="color:#1B2430;font-size:20px;font-weight:700;margin:0 0 4px 0;
+                       letter-spacing:-0.3px;">
+                Benvenuto nella piattaforma
+            </h2>
+            <p style="color:#8E97A3;font-size:13px;margin:0 0 28px 0;line-height:1.5;">
+                Inserisci le credenziali per accedere all'ambiente riservato.
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
-        with st.container():
-            with st.form("login_form", clear_on_submit=False):
-                username = st.text_input("Username", placeholder="Inserisci username")
-                password = st.text_input("Password", type="password", placeholder="Inserisci password")
-                submitted = st.form_submit_button("Accedi →", use_container_width=True)
+        # Form (separato dalla card header per compatibilità Streamlit)
+        with st.form("login_form", clear_on_submit=False):
+            username = st.text_input("Username", placeholder="Inserisci username")
+            password = st.text_input("Password", type="password", placeholder="••••••••")
+            submitted = st.form_submit_button(
+                "Accedi alla piattaforma →",
+                use_container_width=True,
+            )
 
-            if submitted:
-                creds = st.secrets.get("credentials", {})
-                if username == creds.get("username") and password == creds.get("password"):
-                    st.session_state["logged_in"] = True
-                    st.rerun()
-                else:
-                    st.error("Credenziali non valide. Riprova.")
+        if submitted:
+            creds = st.secrets.get("credentials", {})
+            if username == creds.get("username") and password == creds.get("password"):
+                st.session_state["logged_in"] = True
+                st.rerun()
+            else:
+                st.error("Credenziali non valide. Verificare username e password.")
 
+        # Footer
         st.markdown("""
-        <p style="color:rgba(255,255,255,0.4);font-size:11px;text-align:center;margin-top:24px;">
-        © 2025 Meta Advisory · Accesso riservato
+        <p style="color:#B8C4CE;font-size:11px;text-align:center;margin-top:20px;">
+            © 2025 Meta Advisory & Tech Services S.r.l. — Uso strettamente riservato
         </p>
         """, unsafe_allow_html=True)
 
+
+def require_login() -> None:
+    """Blocca l'accesso alla pagina se l'utente non è autenticato."""
+    apply_custom_theme()
+    if st.session_state.get("logged_in"):
+        return
+    render_login()
     st.stop()
