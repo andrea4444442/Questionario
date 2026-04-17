@@ -38,6 +38,69 @@ _CSS = """
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
+/*
+   FIX CRITICO: il selettore * con !important sovrascriveva il font
+   Material Icons di Streamlit, rendendo le icone come testo
+   (es. "keyboard_double_arrow_left"). Re-applichiamo il font corretto
+   su tutte le classi Material Icons.
+*/
+.material-icons,
+.material-icons-sharp,
+.material-icons-outlined,
+.material-icons-round,
+.material-symbols-rounded,
+.material-symbols-outlined,
+.material-symbols-sharp,
+span[class*="material"] {
+    font-family: 'Material Icons Sharp', 'Material Icons Outlined',
+                 'Material Icons Round', 'Material Icons',
+                 'Material Symbols Rounded' !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* ── SIDEBAR TOGGLE BUTTON ───────────────────────────────────────────── */
+/* Pulsante espandi sidebar (quando sidebar è chiusa) */
+[data-testid="stSidebarCollapsedControl"] {
+    background: #FFFFFF !important;
+    border-right: 1px solid #D9E1EA !important;
+}
+[data-testid="stSidebarCollapsedControl"] button {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 4px !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 6px !important;
+    margin: 10px 6px !important;
+    cursor: pointer !important;
+    transition: background 0.15s !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #5B6573 !important;
+}
+[data-testid="stSidebarCollapsedControl"] button:hover {
+    background: #EDF0F5 !important;
+}
+
+/* Pulsante chiudi sidebar (all'interno della sidebar aperta) */
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"],
+section[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"] {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 6px !important;
+    transition: background 0.15s !important;
+    color: #7A9AB0 !important;
+}
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]:hover,
+section[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]:hover {
+    background: rgba(255,255,255,0.08) !important;
+}
+
 /* ── APP BACKGROUND ──────────────────────────────────────────────────── */
 .stApp { background-color: #F5F7FA !important; }
 
@@ -270,6 +333,51 @@ hr {
 
 /* ── SUBHEADER ───────────────────────────────────────────────────────── */
 [data-testid="stMarkdownContainer"] h3 { color: #1B2430 !important; }
+
+/* ── FILE UPLOADER ───────────────────────────────────────────────────── */
+[data-testid="stFileUploaderDropzone"] {
+    background: #FAFBFD !important;
+    border: 1.5px dashed #C8D4DF !important;
+    border-radius: 6px !important;
+    padding: 20px !important;
+    transition: border-color 0.2s, background 0.2s !important;
+}
+[data-testid="stFileUploaderDropzone"]:hover {
+    border-color: #1F3A5F !important;
+    background: #F0F4FA !important;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] > div > span {
+    color: #5B6573 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] > div > small {
+    color: #8E97A3 !important;
+    font-size: 11px !important;
+}
+/* Bottone "Browse files" */
+[data-testid="stFileUploaderDropzone"] button {
+    background: #1F3A5F !important;
+    color: #FFFFFF !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 4px !important;
+    padding: 7px 16px !important;
+    border: none !important;
+    letter-spacing: 0.2px !important;
+    transition: background 0.15s !important;
+}
+[data-testid="stFileUploaderDropzone"] button:hover {
+    background: #16314F !important;
+}
+/* File allegato (dopo upload) */
+[data-testid="stFileUploaderFile"] {
+    background: #F0F4FA !important;
+    border: 1px solid #D9E1EA !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+}
 
 /* ── SCROLLBAR ───────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }

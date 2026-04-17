@@ -163,21 +163,74 @@ def genera_excel(data: dict) -> bytes:
 # ---------------------------------------------------------------------------
 
 def file_upload_con_download(label: str, key: str, tipi: list[str] | None = None) -> str:
-    """Mostra un file uploader, salva i bytes in session_state, restituisce il nome file."""
-    f = st.file_uploader(label, key=key, type=tipi)
+    """Upload documentale professionale con download inline."""
+    formati = " · ".join(t.upper() for t in (tipi or ["PDF", "DOCX", "XLSX"]))
     sk_bytes = f"_file_bytes_{key}"
-    sk_name = f"_file_name_{key}"
+    sk_name  = f"_file_name_{key}"
+
+    # Header documento con icona e metadati
+    st.markdown(f"""
+    <div style="
+        display:flex; align-items:flex-start; gap:12px;
+        padding:12px 16px 10px 16px;
+        background:#F5F7FA;
+        border:1px solid #D9E1EA;
+        border-bottom:none;
+        border-radius:6px 6px 0 0;
+    ">
+        <div style="
+            width:36px;height:36px;border-radius:4px;
+            background:#1F3A5F;display:flex;
+            align-items:center;justify-content:center;
+            flex-shrink:0;margin-top:1px;
+        ">
+            <span style="color:white;font-size:16px;line-height:1;">📎</span>
+        </div>
+        <div>
+            <p style="color:#1B2430!important;font-size:13px;font-weight:600;
+                      margin:0 0 2px 0;line-height:1.4;">{label}</p>
+            <p style="color:#8E97A3!important;font-size:11px;margin:0;">
+                Formati accettati: <strong style="color:#5B6573;">{formati}</strong>
+                &nbsp;·&nbsp; Dimensione massima: 200 MB
+            </p>
+        </div>
+    </div>
+    <div style="
+        border:1px solid #D9E1EA;border-top:none;
+        border-radius:0 0 6px 6px;
+        margin-bottom:8px;overflow:hidden;
+    ">
+    """, unsafe_allow_html=True)
+
+    f = st.file_uploader("", key=key, type=tipi, label_visibility="collapsed")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
     if f is not None:
         st.session_state[sk_bytes] = f.getvalue()
-        st.session_state[sk_name] = f.name
+        st.session_state[sk_name]  = f.name
+
     if sk_bytes in st.session_state:
+        nome = st.session_state[sk_name]
+        st.markdown(f"""
+        <div style="
+            display:flex;align-items:center;gap:8px;
+            background:#DCEFE8;border:1px solid #B2D8CC;
+            border-radius:4px;padding:8px 12px;margin-top:4px;
+        ">
+            <span style="font-size:14px;">✓</span>
+            <span style="color:#1B5E45!important;font-size:12px;font-weight:600;">
+                Documento allegato: {nome}
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
         st.download_button(
-            f"⬇ Scarica: {st.session_state[sk_name]}",
+            f"Scarica documento allegato",
             data=st.session_state[sk_bytes],
-            file_name=st.session_state[sk_name],
+            file_name=nome,
             key=f"dl_{key}",
         )
-        return st.session_state[sk_name]
+        return nome
     return "Non allegato"
 
 

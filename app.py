@@ -26,7 +26,7 @@ render_sidebar()
 col_logo, col_title = st.columns([1, 9], gap="small")
 with col_logo:
     if os.path.exists(LOGO_PATH):
-        st.image(LOGO_PATH, width=68)
+        st.image(LOGO_PATH, width=110)
 with col_title:
     st.markdown("""
     <div style="padding:6px 0 0 4px;">
@@ -54,7 +54,8 @@ st.markdown("""
     Piattaforma per la <strong style="color:#1B2430;font-weight:600;">valutazione del rischio ICT</strong>
     e la due diligence dei fornitori di servizi tecnologici, in conformità con il
     <strong style="color:#1B2430;font-weight:600;">Regolamento DORA (UE 2022/2554)</strong>
-    e le linee guida EBA/BCE per intermediari finanziari e istituti bancari.
+    e le linee guida EBA/BCE per istituti bancari e
+    intermediari finanziari ex art. 106 del TUB.
 </p>
 """, unsafe_allow_html=True)
 
