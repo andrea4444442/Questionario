@@ -73,17 +73,35 @@ span[class*="material"] {
     border-radius: 4px !important;
     width: 36px !important;
     height: 36px !important;
-    padding: 6px !important;
+    padding: 0 !important;
     margin: 10px 6px !important;
     cursor: pointer !important;
     transition: background 0.15s !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: #5B6573 !important;
+    position: relative !important;
 }
 [data-testid="stSidebarCollapsedControl"] button:hover {
     background: #EDF0F5 !important;
+}
+/* Nasconde il testo dell'icona Material Icons (es. "keyboard_double_arrow_left") */
+[data-testid="stSidebarCollapsedControl"] button span,
+[data-testid="stSidebarCollapsedControl"] button svg {
+    font-size: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+}
+/* Inietta ☰ come icona hamburger */
+[data-testid="stSidebarCollapsedControl"] button::before {
+    content: "☰" !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 18px !important;
+    color: #5B6573 !important;
+    line-height: 1 !important;
+    display: block !important;
 }
 
 /* Pulsante chiudi sidebar (all'interno della sidebar aperta) */
@@ -94,11 +112,29 @@ section[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"
     border-radius: 4px !important;
     padding: 6px !important;
     transition: background 0.15s !important;
-    color: #7A9AB0 !important;
+    position: relative !important;
 }
 section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]:hover,
 section[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]:hover {
     background: rgba(255,255,255,0.08) !important;
+}
+/* Nasconde testo icona Material nel pulsante chiudi */
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] span,
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] svg {
+    font-size: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+}
+/* Inietta ✕ come icona chiudi */
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]::before {
+    content: "✕" !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    color: #7A9AB0 !important;
+    line-height: 1 !important;
+    display: block !important;
 }
 
 /* ── APP BACKGROUND ──────────────────────────────────────────────────── */
