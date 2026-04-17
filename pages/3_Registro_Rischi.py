@@ -10,8 +10,10 @@ from openpyxl.utils import get_column_letter
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from auth import require_login
 from supabase_client import carica_submissions, carica_registro, salva_registro, elimina_registro
+from style import inject_css
 
 require_login()
+inject_css()
 
 # ---------------------------------------------------------------------------
 # Matrice Rischio Residuo
