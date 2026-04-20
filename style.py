@@ -266,6 +266,24 @@ h3 {
     box-shadow: 0 3px 10px rgba(31,58,95,0.22) !important;
 }
 
+/* ── SECONDARY BUTTON (pulsante ⓘ info card) ────────────────────────── */
+.main .stButton > button[kind="secondary"] {
+    background: transparent !important;
+    border: 1.5px solid #D9E1EA !important;
+    color: #5B6573 !important;
+    border-radius: 4px !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    padding: 4px 8px !important;
+    box-shadow: none !important;
+    transition: all 0.15s !important;
+}
+.main .stButton > button[kind="secondary"]:hover {
+    border-color: #1F3A5F !important;
+    color: #1F3A5F !important;
+    background: #F0F4FA !important;
+}
+
 /* ── DOWNLOAD BUTTON ─────────────────────────────────────────────────── */
 .stDownloadButton > button {
     background-color: #FFFFFF !important;
