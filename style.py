@@ -61,8 +61,7 @@ span[class*="material"] {
     align-items: center !important;
 }
 
-/* ── SIDEBAR TOGGLE BUTTON ───────────────────────────────────────────── */
-/* Pulsante espandi sidebar (quando sidebar è chiusa) */
+/* ── SIDEBAR TOGGLE BUTTON (hamburger) ──────────────────────────────── */
 [data-testid="stSidebarCollapsedControl"] {
     background: #FFFFFF !important;
     border-right: 1px solid #D9E1EA !important;
@@ -85,56 +84,78 @@ span[class*="material"] {
 [data-testid="stSidebarCollapsedControl"] button:hover {
     background: #EDF0F5 !important;
 }
-/* Nasconde il testo dell'icona Material Icons (es. "keyboard_double_arrow_left") */
-[data-testid="stSidebarCollapsedControl"] button span,
-[data-testid="stSidebarCollapsedControl"] button svg {
-    font-size: 0 !important;
+/*
+   Nasconde TUTTO il contenuto originale del pulsante (testo Material Icons,
+   SVG, span) — indipendentemente da come Streamlit lo renderizza.
+*/
+[data-testid="stSidebarCollapsedControl"] button > * {
+    display: none !important;
+    visibility: hidden !important;
     width: 0 !important;
     height: 0 !important;
     overflow: hidden !important;
-    opacity: 0 !important;
 }
-/* Inietta ☰ come icona hamburger */
+/*
+   Crea le 3 linee hamburger via ::before + box-shadow.
+   Questo approccio è font-indipendente: non dipende da Material Icons né da Inter.
+*/
 [data-testid="stSidebarCollapsedControl"] button::before {
-    content: "☰" !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 18px !important;
-    color: #5B6573 !important;
-    line-height: 1 !important;
+    content: "" !important;
     display: block !important;
+    width: 16px !important;
+    height: 2px !important;
+    background: #5B6573 !important;
+    border-radius: 1px !important;
+    /* linea centrale + shadow sopra e sotto = 3 linee hamburger */
+    box-shadow: 0 -5px 0 0 #5B6573, 0 5px 0 0 #5B6573 !important;
+    flex-shrink: 0 !important;
 }
 
-/* Pulsante chiudi sidebar (all'interno della sidebar aperta) */
-section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"],
-section[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"] {
+/* ── SIDEBAR CLOSE BUTTON (dentro la sidebar aperta) ────────────────── */
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] {
     background: transparent !important;
     border: none !important;
     border-radius: 4px !important;
     padding: 6px !important;
     transition: background 0.15s !important;
     position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
 }
-section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]:hover,
-section[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]:hover {
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]:hover {
     background: rgba(255,255,255,0.08) !important;
 }
-/* Nasconde testo icona Material nel pulsante chiudi */
-section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] span,
-section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] svg {
-    font-size: 0 !important;
+/* Nasconde contenuto originale */
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] > * {
+    display: none !important;
+    visibility: hidden !important;
     width: 0 !important;
     height: 0 !important;
-    overflow: hidden !important;
-    opacity: 0 !important;
 }
-/* Inietta ✕ come icona chiudi */
+/* Inietta ✕ con font standard (non Material Icons) */
 section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]::before {
     content: "✕" !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 14px !important;
+    font-family: 'Inter', -apple-system, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
     color: #7A9AB0 !important;
     line-height: 1 !important;
     display: block !important;
+}
+
+/* ── SIDEBAR NAV AUTOMATICA (duplicata) — nascosta ───────────────────── */
+/*
+   Streamlit genera automaticamente una sezione di navigazione in sidebar
+   basata sui file in pages/. Poiché la navigazione personalizzata in
+   render_sidebar() già copre tutti i link, quella auto-generata va nascosta.
+*/
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarNavItems"],
+section[data-testid="stSidebar"] nav {
+    display: none !important;
 }
 
 /* ── APP BACKGROUND ──────────────────────────────────────────────────── */
