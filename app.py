@@ -7,7 +7,7 @@ st.set_page_config(
     page_title="ICT Risk Platform — Meta Advisory",
     page_icon="▪",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 require_login()

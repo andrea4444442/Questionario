@@ -23,8 +23,10 @@ def render_login() -> None:
         justify-content: center;
         min-height: 90vh;
     }
-    /* Nasconde la topbar durante il login */
+    /* Nasconde topbar e sidebar durante il login */
     header[data-testid="stHeader"] { display: none !important; }
+    [data-testid="stSidebar"],
+    [data-testid="stSidebarCollapsedControl"] { display: none !important; }
     </style>
     """, unsafe_allow_html=True)
 

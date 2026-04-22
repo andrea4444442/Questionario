@@ -85,33 +85,36 @@ span[class*="material"] {
     background: #EDF0F5 !important;
 }
 /*
-   Nasconde TUTTO il contenuto originale del pulsante (testo Material Icons,
-   SVG, span) — indipendentemente da come Streamlit lo renderizza.
+   Nasconde il contenuto originale del bottone (testo "double_arrow_right" o SVG).
+   Usa opacity:0 + position:absolute invece di display:none per evitare
+   problemi di specificità con le regole Streamlit interne.
 */
-[data-testid="stSidebarCollapsedControl"] button > * {
-    display: none !important;
-    visibility: hidden !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
+[data-testid="stSidebarCollapsedControl"] button > *,
+[data-testid="stSidebarCollapsedControl"] button span,
+[data-testid="stSidebarCollapsedControl"] button svg {
+    opacity: 0 !important;
+    position: absolute !important;
+    pointer-events: none !important;
 }
 /*
-   Inietta ☰ (U+2630) come icona hamburger.
-   font-family: Arial ha specificità più alta del rule globale
-   "* { font-family: Inter !important }" perché questo selettore
-   è più specifico di *, quindi Arial vince e ☰ si renderizza correttamente.
-   Il box-shadow precedente veniva clippato da overflow:hidden del button.
+   Inietta ☰ tramite ::after con posizionamento assoluto centrato.
+   ::after non è un elemento figlio del DOM quindi non viene
+   influenzato dalle regole sui figli sopra.
 */
-[data-testid="stSidebarCollapsedControl"] button::before {
+[data-testid="stSidebarCollapsedControl"] button::after {
     content: "☰" !important;
     font-family: Arial, Helvetica, sans-serif !important;
     font-size: 18px !important;
     font-weight: 400 !important;
-    font-style: normal !important;
     color: #5B6573 !important;
-    line-height: 1 !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     display: block !important;
-    letter-spacing: normal !important;
+    line-height: 1 !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
 }
 
 /* ── SIDEBAR CLOSE BUTTON (dentro la sidebar aperta) ────────────────── */
@@ -131,22 +134,29 @@ section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] {
 section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]:hover {
     background: rgba(255,255,255,0.08) !important;
 }
-/* Nasconde contenuto originale */
-section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] > * {
-    display: none !important;
-    visibility: hidden !important;
-    width: 0 !important;
-    height: 0 !important;
+/* Nasconde contenuto originale del bottone chiudi sidebar */
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] > *,
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] span,
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] svg {
+    opacity: 0 !important;
+    position: absolute !important;
+    pointer-events: none !important;
 }
-/* Inietta ✕ con font standard (non Material Icons) */
-section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]::before {
+/* Inietta ✕ tramite ::after centrato */
+section[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"]::after {
     content: "✕" !important;
-    font-family: 'Inter', -apple-system, sans-serif !important;
+    font-family: Arial, Helvetica, sans-serif !important;
     font-size: 13px !important;
     font-weight: 400 !important;
     color: #7A9AB0 !important;
-    line-height: 1 !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     display: block !important;
+    line-height: 1 !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
 }
 
 /* ── SIDEBAR NAV AUTOMATICA (duplicata) — nascosta ───────────────────── */
