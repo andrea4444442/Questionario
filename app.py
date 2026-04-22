@@ -372,7 +372,7 @@ def render_dashboard_cards() -> None:
                     card["dlg"]()
             with cta_c:
                 st.page_link(card["link"], label=card["cta"], use_container_width=True)
-rra laterale sini
+
 
 render_dashboard_cards()
 
