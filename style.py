@@ -96,19 +96,22 @@ span[class*="material"] {
     overflow: hidden !important;
 }
 /*
-   Crea le 3 linee hamburger via ::before + box-shadow.
-   Questo approccio è font-indipendente: non dipende da Material Icons né da Inter.
+   Inietta ☰ (U+2630) come icona hamburger.
+   font-family: Arial ha specificità più alta del rule globale
+   "* { font-family: Inter !important }" perché questo selettore
+   è più specifico di *, quindi Arial vince e ☰ si renderizza correttamente.
+   Il box-shadow precedente veniva clippato da overflow:hidden del button.
 */
 [data-testid="stSidebarCollapsedControl"] button::before {
-    content: "" !important;
+    content: "☰" !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    color: #5B6573 !important;
+    line-height: 1 !important;
     display: block !important;
-    width: 16px !important;
-    height: 2px !important;
-    background: #5B6573 !important;
-    border-radius: 1px !important;
-    /* linea centrale + shadow sopra e sotto = 3 linee hamburger */
-    box-shadow: 0 -5px 0 0 #5B6573, 0 5px 0 0 #5B6573 !important;
-    flex-shrink: 0 !important;
+    letter-spacing: normal !important;
 }
 
 /* ── SIDEBAR CLOSE BUTTON (dentro la sidebar aperta) ────────────────── */

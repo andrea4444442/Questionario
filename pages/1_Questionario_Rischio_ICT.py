@@ -11,12 +11,13 @@ from openpyxl.drawing.image import Image as XlImage
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from auth import require_login
 from supabase_client import salva_submission
-from style import inject_css
+from style import inject_css, render_sidebar
 
 LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Logo Meta.png")
 
 require_login()
 inject_css()
+render_sidebar()
 
 
 @st.cache_data(ttl=0)
