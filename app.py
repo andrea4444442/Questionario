@@ -337,7 +337,7 @@ def render_dashboard_cards() -> None:
             st.markdown(
                 f'<div style="background:#FFFFFF;border:1px solid #D9E1EA;'
                 f'border-top:3px solid {card["accent"]};border-radius:6px;'
-                f'padding:22px 24px 22px 24px;'
+                f'padding:22px 24px 22px 24px;min-height:120px;'
                 f'box-shadow:0 2px 8px rgba(21,37,53,0.05);">'
                 f'<div style="display:flex;align-items:center;'
                 f'justify-content:space-between;margin-bottom:14px;">'
