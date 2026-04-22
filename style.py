@@ -3,6 +3,7 @@ Tema grafico enterprise — ICT Risk Management Platform.
 Palette istituzionale: navy scuro · grigio neutro · accenti teal controllati.
 """
 import streamlit as st
+import streamlit.components.v1 as _components
 
 # ---------------------------------------------------------------------------
 # Palette di riferimento
@@ -489,9 +490,45 @@ hr {
 """
 
 
+_HAMBURGER_JS = """
+<script>
+(function() {
+    function fixHamburger() {
+        var doc = window.parent.document;
+        if (!doc) return;
+        var btns = doc.querySelectorAll('button');
+        btns.forEach(function(btn) {
+            var txt = (btn.textContent || btn.innerText || '').trim();
+            if ((txt.indexOf('double_arrow') !== -1 || txt.indexOf('keyboard_double') !== -1)
+                && !btn.getAttribute('data-h-fixed')) {
+                btn.setAttribute('data-h-fixed', '1');
+                btn.style.cssText += 'font-size:0!important;color:transparent!important;position:relative!important;overflow:visible!important;';
+                var spans = btn.querySelectorAll('span');
+                spans.forEach(function(s){ s.style.cssText += 'font-size:0!important;opacity:0!important;'; });
+                var existing = btn.querySelector('[data-hamburger]');
+                if (!existing) {
+                    var icon = doc.createElement('span');
+                    icon.setAttribute('data-hamburger', '1');
+                    icon.textContent = '☰';
+                    icon.style.cssText = 'font-size:20px!important;color:#5B6573!important;position:absolute!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;line-height:1!important;font-family:Arial,Helvetica,sans-serif!important;pointer-events:none!important;opacity:1!important;';
+                    btn.appendChild(icon);
+                }
+            }
+        });
+    }
+    setTimeout(fixHamburger, 200);
+    setTimeout(fixHamburger, 800);
+    var observer = new MutationObserver(function(){ fixHamburger(); });
+    observer.observe(window.parent.document.body, {childList:true, subtree:true});
+})();
+</script>
+"""
+
+
 def apply_custom_theme() -> None:
-    """Inietta il CSS globale. Da chiamare all'inizio di ogni pagina."""
+    """Inietta il CSS globale e il JS per l'hamburger. Da chiamare all'inizio di ogni pagina."""
     st.markdown(_CSS, unsafe_allow_html=True)
+    _components.html(_HAMBURGER_JS, height=0, scrolling=False)
 
 
 # Alias per compatibilità con il codice esistente
