@@ -337,8 +337,8 @@ def render_dashboard_cards() -> None:
             st.markdown(
                 f'<div style="background:#FFFFFF;border:1px solid #D9E1EA;'
                 f'border-top:3px solid {card["accent"]};border-radius:6px;'
-                f'padding:26px 24px 22px 24px;'
-                f'box-shadow:0 2px 8px rgba(21,37,53,0.05);min-height:230px;">'
+                f'padding:22px 24px 22px 24px;'
+                f'box-shadow:0 2px 8px rgba(21,37,53,0.05);">'
                 f'<div style="display:flex;align-items:center;'
                 f'justify-content:space-between;margin-bottom:14px;">'
                 f'<span style="color:{card["tag_c"]};font-size:10px;font-weight:700;'
@@ -354,10 +354,8 @@ def render_dashboard_cards() -> None:
                 f'line-height:1;user-select:none;" title="Clicca \'ⓘ\' per i dettagli">i</span>'
                 f'</div></div>'
                 f'<h3 style="color:#1B2430!important;font-size:15px!important;'
-                f'font-weight:700!important;margin:0 0 10px 0;line-height:1.3;">'
+                f'font-weight:700!important;margin:0;line-height:1.3;">'
                 f'{card["title"]}</h3>'
-                f'<p style="color:#5B6573!important;font-size:12.5px!important;'
-                f'line-height:1.65!important;margin:0;">{card["desc"]}</p>'
                 f'</div>',
                 unsafe_allow_html=True,
             )

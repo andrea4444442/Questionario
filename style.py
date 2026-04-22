@@ -85,36 +85,49 @@ span[class*="material"] {
     background: #EDF0F5 !important;
 }
 /*
-   Nasconde il contenuto originale del bottone (testo "double_arrow_right" o SVG).
-   Usa opacity:0 + position:absolute invece di display:none per evitare
-   problemi di specificità con le regole Streamlit interne.
+   APPROCCIO DEFINITIVO — font-size:0 su tutti i discendenti.
+   Nasconde qualsiasi testo/icona dentro il bottone (testo Material Icons,
+   SVG, span con qualunque classe) indipendentemente dalla struttura DOM
+   della versione di Streamlit in uso.
 */
-[data-testid="stSidebarCollapsedControl"] button > *,
-[data-testid="stSidebarCollapsedControl"] button span,
-[data-testid="stSidebarCollapsedControl"] button svg {
-    opacity: 0 !important;
-    position: absolute !important;
-    pointer-events: none !important;
+[data-testid="stSidebarCollapsedControl"] * {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+}
+[data-testid="stSidebarCollapsedControl"] svg {
+    display: none !important;
 }
 /*
-   Inietta ☰ tramite ::after con posizionamento assoluto centrato.
-   ::after non è un elemento figlio del DOM quindi non viene
-   influenzato dalle regole sui figli sopra.
+   Mostra ☰ tramite ::after con font-size esplicita.
+   ::after è generato da CSS, non è un discendente DOM,
+   quindi NON eredita font-size:0 dai figli sopra.
 */
+[data-testid="stSidebarCollapsedControl"] button {
+    position: relative !important;
+    overflow: visible !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
+}
+[data-testid="stSidebarCollapsedControl"] button:hover {
+    background: #EDF0F5 !important;
+}
 [data-testid="stSidebarCollapsedControl"] button::after {
     content: "☰" !important;
     font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     font-weight: 400 !important;
+    line-height: 1 !important;
     color: #5B6573 !important;
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     display: block !important;
-    line-height: 1 !important;
-    opacity: 1 !important;
-    pointer-events: none !important;
 }
 
 /* ── SIDEBAR CLOSE BUTTON (dentro la sidebar aperta) ────────────────── */
