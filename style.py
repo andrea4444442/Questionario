@@ -496,30 +496,39 @@ _HAMBURGER_JS = """
     function fixHamburger() {
         var doc = window.parent.document;
         if (!doc) return;
-        var btns = doc.querySelectorAll('button');
-        btns.forEach(function(btn) {
-            var txt = (btn.textContent || btn.innerText || '').trim();
-            if ((txt.indexOf('double_arrow') !== -1 || txt.indexOf('keyboard_double') !== -1)
-                && !btn.getAttribute('data-h-fixed')) {
+        // Targetta SOLO il container del toggle collassato, non i bottoni dentro la sidebar aperta
+        var containers = doc.querySelectorAll('[data-testid="stSidebarCollapsedControl"]');
+        containers.forEach(function(container) {
+            var btn = container.querySelector('button');
+            if (!btn) return;
+            if (!btn.getAttribute('data-h-fixed')) {
                 btn.setAttribute('data-h-fixed', '1');
                 btn.style.cssText += 'font-size:0!important;color:transparent!important;position:relative!important;overflow:visible!important;';
                 var spans = btn.querySelectorAll('span');
                 spans.forEach(function(s){ s.style.cssText += 'font-size:0!important;opacity:0!important;'; });
-                var existing = btn.querySelector('[data-hamburger]');
-                if (!existing) {
-                    var icon = doc.createElement('span');
-                    icon.setAttribute('data-hamburger', '1');
-                    icon.textContent = '☰';
-                    icon.style.cssText = 'font-size:20px!important;color:#5B6573!important;position:absolute!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;line-height:1!important;font-family:Arial,Helvetica,sans-serif!important;pointer-events:none!important;opacity:1!important;';
-                    btn.appendChild(icon);
-                }
             }
+            // Aggiorna sempre la visibilità dell'icona: mostra ☰ solo se sidebar chiusa
+            var existing = btn.querySelector('[data-hamburger]');
+            var sidebarOpen = !!doc.querySelector('[data-testid="stSidebar"][aria-expanded="true"]')
+                           || !!doc.querySelector('[data-testid="stSidebar"].st-emotion-cache-1cypcdb')
+                           || (doc.querySelector('[data-testid="stSidebar"]') &&
+                               doc.querySelector('[data-testid="stSidebar"]').style.display !== 'none' &&
+                               getComputedStyle(doc.querySelector('[data-testid="stSidebar"]')).width !== '0px');
+            if (!existing) {
+                var icon = doc.createElement('span');
+                icon.setAttribute('data-hamburger', '1');
+                icon.textContent = '☰';
+                icon.style.cssText = 'font-size:20px!important;color:#5B6573!important;position:absolute!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;line-height:1!important;font-family:Arial,Helvetica,sans-serif!important;pointer-events:none!important;opacity:1!important;';
+                btn.appendChild(icon);
+                existing = icon;
+            }
+            existing.style.opacity = sidebarOpen ? '0' : '1';
         });
     }
     setTimeout(fixHamburger, 200);
     setTimeout(fixHamburger, 800);
     var observer = new MutationObserver(function(){ fixHamburger(); });
-    observer.observe(window.parent.document.body, {childList:true, subtree:true});
+    observer.observe(window.parent.document.body, {childList:true, subtree:true, attributes:true});
 })();
 </script>
 """
